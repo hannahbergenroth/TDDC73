@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Example 1</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+    <string name="btn">BUTTON</string>
+    <string name="email">Email</string>
+    <string name="image_desdription">image</string>
+
+</resources>
