@@ -41,8 +41,8 @@ class App extends Component {
     cardName: 'FULL NAME',
     month: 'MM',
     year: 'YY',
-    cvv: 0,
-    isCardFlipped: true,
+    cvv: '',
+    isCardFlipped: false,
   };
 
 setCardNumber = (text) => {
@@ -96,6 +96,14 @@ setCardNumber = (text) => {
     }
 
     return(<Text style={styles.font3}>{text}</Text>);
+  };
+  showCVV=()=>{
+    let text = '';
+
+    for(let i=0; i<this.state.cvv.length; i++){
+      text += '*';
+    }
+    return text;
   };
 
   getCardType = () => {
@@ -158,7 +166,10 @@ setCardNumber = (text) => {
   };
 
     flipCard = (status) => {
-      this.isCardFlipped = status;
+      if(status == true && this.state.isCardFlipped==false)
+        this.setState({isCardFlipped: true});
+      else if(status == false && this.state.isCardFlipped==true)
+        this.setState({isCardFlipped: false});
     };
 
   render() {
@@ -174,7 +185,7 @@ setCardNumber = (text) => {
           <View style={styles.cardRow1_back}><View style={styles.remsa2}></View>
           <View style={styles.cvv}></View><Text style={styles.cvv_font}>CVV</Text></View>
           <View style={styles.cardRow2_back}>
-          <View style={styles.remsa}></View>
+          <View style={styles.remsa}><View style={{flex: 1, justifyContent: 'center'}}><Text style={{alignSelf: 'flex-end', paddingRight: 10}}>{this.showCVV()}</Text></View></View>
           </View>
           <View style={styles.cardRow3_back}>
           <Image source={this.getCardType()} style={this.style(this.getCardType().toString(),styles.img_back_logo)}/>
@@ -246,7 +257,7 @@ setCardNumber = (text) => {
                 <Picker.Item label="2030" value="30" />
                 <Picker.Item label="2031" value="31" />
               </Picker>
-              <TextInput keyboardType={'numeric'} style={styles.input_CVV} value={this.state.cvv} maxLength={3} onChangeText={value => this.setCardCVV(value)}/>
+              <TextInput keyboardType={'numeric'} onBlur={() => this.flipCard(false)} onFocus={() => this.flipCard(true)} style={styles.input_CVV} value={this.state.cvv} maxLength={4} onChangeText={value => this.setCardCVV(value)}/>
             </View>
             <View style={styles.btn}>
               <Button title="Submit"/>
@@ -289,7 +300,7 @@ const styles = StyleSheet.create({
   remsa: {
     flex: 1,
     width: '100%',
-    height: '70%',
+    //height: '80%',
     alignSelf: 'center',
     backgroundColor: '#fff',
     borderRadius: 5,
@@ -300,10 +311,9 @@ const styles = StyleSheet.create({
     flex:2,
     backgroundColor: '#000000',
     width: '100%',
-    height: '80%',
     opacity: 0.75,
     alignItems: 'flex-end',
-    marginTop: 14,
+    marginTop: 20,
   },
 
   img_jcb: {
@@ -350,7 +360,7 @@ font3: {
     paddingRight: 20,
   },
   cardRow1_back: {
-    flex: 2,
+    flex: 3,
     width: '100%',
     height: '10%',
     alignItems: 'center',
@@ -366,7 +376,7 @@ font3: {
   },
 
   cardRow3_back: {
-    flex:2,
+    flex:3,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -404,7 +414,8 @@ font3: {
     color: '#fff',
     fontSize: 11,
     alignSelf: 'flex-end',
-    marginRight: 15,
+    marginRight: 20,
+
   },
 
   form: {
