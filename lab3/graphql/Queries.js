@@ -13,3 +13,26 @@ export const GET_GITHUB = gql`
     }
   }
 `;
+
+export const GITHUBB = gql`
+query MyQuery {
+  search(first: 10, type: REPOSITORY, query: "language:Java stars:>10000") {
+    repositoryCount
+    edges {
+      node {
+        ... on Repository {
+          name
+          descriptionHTML
+          stargazers {
+            totalCount
+          }
+          forks {
+            totalCount
+          }
+          updatedAt
+        }
+      }
+    }
+  }
+}
+`;
