@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   StatusBar,
   AppRegistry,
   ActivityIndicator,
+  Button
 } from 'react-native';
 
 import {
@@ -18,69 +19,49 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-//import { useQuery } from '@apollo/react-hooks';
-//import { ApolloProvider } from '@apollo/react-hooks';
 import { ApolloProvider, ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client';
 
-//import gql from 'graphql-tag';
+import PickLanguage from './components/PickLanguage';
 
-import Picker from './components/PickLanguage';
 import Display from './components/Display';
 
 import { GET_GITHUB } from './graphql/Queries';
-import { GITHUBB } from './graphql/Queries';
-
-//import { 'GITHUB_PERSONAL_KEY' } from 'react-native-dotenv'
-
+import { GITHUB_DATA } from './graphql/Queries';
 
 const initialState = {
-  language: "Top Overall",
+  language: 'All',
 };
-
-
-const EXCHANGE_RATES = gql`
-  query GetExchangeRates {
-    rates(currency: "USD") {
-      currency
-      rate
-    }
-  }
-`;
-
 
 const App = () => {
   const [state, setState] = useState(initialState);
 
-  const setLanguage = (language) => {
-    setState({ language: language });
+  const updateState = (keyName, value) => {
+    setState({
+      ...state,
+      [keyName]: value || initialState[keyName],
+    });
   };
 
   return(
-    <ScrollView>
-      <GetGitHub/>
-    </ScrollView>
-  )
+    <SafeAreaView>
+      <PickLanguage state={state} onUpdateState={updateState}/>
+      <Text>State:{state.language}</Text>
+      <ScrollView>
+        <GetGitHub state={state}/>
+      </ScrollView>
+    </SafeAreaView>
+  );
 };
 
-const GetExchangeRate = () => {
-  const { loading, data, error } = useQuery(EXCHANGE_RATES);
+const GetGitHub = ({state}) => {
+  const { loading, data, error } = useQuery(GITHUB_DATA, {
+    variables: {
+      query: `language:${state.language} stars:>10000`,
+      pollInterval: 500,
+    }
+  });
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error :(</Text>;
-
-  const renderData = data.rates;
-
-  return renderData.map(({currency, rate}) => {
-    return (
-      <View><Text>{currency}:{rate}</Text></View>
-    )
-  })
-};
-
-const GetGitHub = () => {
-  const { loading, data, error } = useQuery(GITHUBB);
-
-  if (loading) return <Text>Loading...</Text>;
+  if (loading) return <ActivityIndicator size="small" color="#0000ff" />;
   if (error) return <Text>Error :(</Text>;
 
   const renderData = data.search.edges;
@@ -88,7 +69,7 @@ const GetGitHub = () => {
 
   return renderData.map(function(name)  {
     return (
-      <View><Text>{name.node.stargazers.totalCount}:{name.node.name}</Text></View>
+      <View key={name.node.name}><Text>{name.node.stargazers.totalCount}:{name.node.name}</Text></View>
     )
 })
 };

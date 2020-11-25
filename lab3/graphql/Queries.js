@@ -14,9 +14,9 @@ export const GET_GITHUB = gql`
   }
 `;
 
-export const GITHUBB = gql`
-query MyQuery {
-  search(first: 10, type: REPOSITORY, query: "language:Java stars:>10000") {
+export const GITHUB_DATA = gql`
+query($query: String!) {
+  search(first: 10, type: REPOSITORY, query: $query) {
     repositoryCount
     edges {
       node {
