@@ -37,8 +37,8 @@ const initialState = {
 const link = new HttpLink({
   uri: `https://api.github.com/graphql`,
   headers: {
-    Authorization: 'b0235cb5044d4e17f51896038956504c8d32659a'
-    //`Bearer GITHUB_TOKEN`
+    Authorization: `Bearer GITHUB_TOKEN`
+
   }
 });
 
@@ -90,7 +90,7 @@ const App = () => {
     return (
       <View><Text>{currency}:{rate}</Text></View>
     )
-  })      
+  })
 };
 
 const styles = StyleSheet.create({
