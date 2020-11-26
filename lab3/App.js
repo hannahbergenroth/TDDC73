@@ -1,4 +1,8 @@
+import 'react-native-gesture-handler';
 import React, { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,7 +13,9 @@ import {
   AppRegistry,
   ActivityIndicator,
   Button,
-  Dimensions
+  Dimensions,
+  TouchableOpacity,
+  Platform
 } from 'react-native';
 
 import {
@@ -20,6 +26,8 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import { StackNavigator } from 'react-navigation';
+
 import { ApolloProvider, ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client';
 
 import PickLanguage from './components/PickLanguage';
@@ -29,14 +37,24 @@ import Display from './components/Display';
 import { GET_GITHUB } from './graphql/Queries';
 import { GITHUB_DATA } from './graphql/Queries';
 
-
 const ScreenHeight = Dimensions.get('window').height;
+
+const Stack = createStackNavigator();
 
 const initialState = {
   language: 'All',
 };
 
 const App = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Top 20 Trending last week" component={GetGitHub} />
+      <Stack.Screen name="Details" component={DetailScreen} />
+    </Stack.Navigator>
+  );
+};
+
+const GetGitHub = ({ navigation }) => {
   const [state, setState] = useState(initialState);
 
   const updateState = (keyName, value) => {
@@ -45,25 +63,6 @@ const App = () => {
       [keyName]: value || initialState[keyName],
     });
   };
-
-  return (
-    <SafeAreaView >
-      <View style={{ alignSelf: 'center', padding: 10 }}><Text style={{ fontSize: 22 }}>Top 20 Trending</Text></View>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
-          <GetGitHub state={state} />
-        </View>
-
-      </ScrollView>
-      <View>
-        <PickLanguage state={state} onUpdateState={updateState} />
-      </View>
-
-    </SafeAreaView>
-  );
-};
-
-const GetGitHub = ({ state }) => {
   const { loading, data, error } = useQuery(GITHUB_DATA, {
     variables: {
       query: `language:${state.language} created:>2020-11-20 sort:stars-desc`,
@@ -76,18 +75,33 @@ const GetGitHub = ({ state }) => {
 
   const renderData = data.search.edges;
 
+  return (
+    <SafeAreaView >
 
-  return renderData.map(function (name) {
-    return (
-      <View onStartShouldSetResponder={() => console.log(name.node.name)} style={styles.row} key={name.node.name}><Text>{name.node.name}</Text><Text>{name.node.owner.login}/{name.node.name}</Text><Text>{name.node.description}</Text><Text>stars:{name.node.stargazers.totalCount}, forks:{name.node.forks.totalCount}</Text></View>
-    )
-  })
+
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
+          {renderData.map(function (name) {
+            return (
+              <View onStartShouldSetResponder={() => navigation.navigate('Details', { name: name })} style={styles.row} key={name.node.name}><Text>{name.node.name}</Text><Text>{name.node.owner.login}/{name.node.name}</Text><Text>{name.node.description}</Text><Text>stars:{name.node.stargazers.totalCount}, forks:{name.node.forks.totalCount}</Text></View>
+            )
+          }
+          )}
+        </View>
+
+      </ScrollView>
+      <View>
+        <PickLanguage state={state} onUpdateState={updateState} />
+      </View>
+
+    </SafeAreaView>
+  )
 };
 
-function DetailsScreen() {
+const DetailScreen = ({ navigation, route }) => {
   return (
     <View>
-      <Text>Details</Text>
+      <Text>This is {route.params.name.node.name}'s profile , alias: {route.params.name.node.owner.login}</Text>
     </View>
   );
 }

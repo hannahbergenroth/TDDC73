@@ -3,7 +3,8 @@ import { AppRegistry } from 'react-native';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { HttpLink } from 'apollo-link-http';
 import Appen from './App';
-import {name as appName} from './app.json';
+import { name as appName } from './app.json';
+import { NavigationContainer } from '@react-navigation/native';
 
 import { GITHUB_TOKEN } from "@env";
 
@@ -22,7 +23,9 @@ const client = new ApolloClient({
 
 const App = () => (
   <ApolloProvider client={client}>
-    <Appen />
+    <NavigationContainer>
+      <Appen />
+    </NavigationContainer>
   </ApolloProvider>
 );
 
