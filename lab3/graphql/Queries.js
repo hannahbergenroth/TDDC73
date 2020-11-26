@@ -16,23 +16,34 @@ export const GET_GITHUB = gql`
 
 export const GITHUB_DATA = gql`
 query($query: String!) {
-  search(first: 10, type: REPOSITORY, query: $query) {
-    repositoryCount
+  search(first: 20, type: REPOSITORY, query: $query) {
     edges {
       node {
         ... on Repository {
+          id
           name
-          descriptionHTML
-          stargazers {
-            totalCount
-          }
           forks {
             totalCount
           }
-          updatedAt
+          description
+          forkCount
+          owner {
+            avatarUrl
+            ... on User {
+              id
+              name
+              login
+            }
+          }
+          createdAt
+          stargazerCount
+          stargazers {
+            totalCount
+          }
         }
       }
     }
   }
 }
 `;
+
