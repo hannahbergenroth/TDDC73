@@ -1,3 +1,3 @@
-![Alt Text](gif.gif)
+# lab_2
 
-<img src="gif.gif" width="40" height="40" />
+<img src="demo.gif" width="500"/>
