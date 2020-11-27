@@ -33,12 +33,23 @@ query($query: String!) {
               id
               name
               login
+              bio
+              createdAt
+              email
+              followers {
+                totalCount
+              }
             }
           }
           createdAt
           stargazerCount
           stargazers {
             totalCount
+          }
+          languages(first: 1) {
+            nodes {
+              name
+            }
           }
         }
       }

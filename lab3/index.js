@@ -21,12 +21,20 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
+const MyTheme = {
+  dark: true,
+  colors: {
+    background: 'rgb(234, 242, 248)',
+    card: 'rgb(255, 255, 255)',
+    text: 'rgb(28, 28, 30)',
+  },
+};
+
 const App = () => (
   <ApolloProvider client={client}>
-    <NavigationContainer>
+    <NavigationContainer theme={MyTheme}>
       <Appen />
     </NavigationContainer>
   </ApolloProvider>
 );
-
 AppRegistry.registerComponent(appName, () => App);

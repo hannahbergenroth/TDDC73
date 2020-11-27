@@ -1,6 +1,5 @@
 import { Picker } from '@react-native-picker/picker';
-import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import React from 'react';
 
 const PickLanguage = ({ state, onUpdateState }) => {
   return (
@@ -22,11 +21,4 @@ const PickLanguage = ({ state, onUpdateState }) => {
     </Picker >
   );
 }
-
-const styles = StyleSheet.create({
-  pickerItem: {
-    backgroundColor: '#000000',
-  },
-});
-
 export default PickLanguage;
