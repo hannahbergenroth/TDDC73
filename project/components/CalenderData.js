@@ -40,7 +40,7 @@ export const getToday = () => {
       ].join('-');
 }
 
-export const getNumberOfDays = (month = MONTH, year = YEAR) => {
+export const getNumberOfDays = (month, year) => {
     const month30 = [4,6,9,11];
     const leapYear = ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0);
 
@@ -53,8 +53,8 @@ export const getNumberOfDays = (month = MONTH, year = YEAR) => {
             : 31;
 }
 
-export const getMonthFirstDay = (month = MONTH, year = YEAR) => {
-    return +(new Date(`${year}-${zeroPad(month, 2)}-01`).getDay()) + 1;
+export const getMonthFirstDay = (month, year) => {
+    return (new Date(`${year}-${zeroPad(month, 2)}-01`).getDay()) + 1;
 }
   
 export const getPrevMonth = (month, year) => {

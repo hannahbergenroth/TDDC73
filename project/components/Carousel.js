@@ -1,10 +1,11 @@
 import React, { useState }  from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity,  Dimensions } from 'react-native';
 
-const Carousel = ({ data, split }) => {
+const Carousel = (props) => {
+
     const initialState = {
         currentItems: [],
-        limit: split,
+        limit: props.split ? props.split : 2,
         activePage: 1,
       };
 
@@ -12,7 +13,7 @@ const Carousel = ({ data, split }) => {
 
     // Logic for displaying page numbers
     let pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(data.length / state.limit); i++) {
+    for (let i = 1; i <= Math.ceil(props.data.length / state.limit); i++) {
         pageNumbers.push(i);
     }
     //Radiobuttons
@@ -31,14 +32,16 @@ const Carousel = ({ data, split }) => {
     let indexOfLastItem = state.activePage * state.limit;
     let indexOfFirstItem = indexOfLastItem - state.limit;
     let currentItems = [];
-    currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+    currentItems = props.data.slice(indexOfFirstItem, indexOfLastItem);
     let renderItems = [];
-    renderItems = currentItems.map((data, index) => {
-        let imageURL = { uri: data.posterurl };
+    renderItems = currentItems.map((item, index) => {
+        let imageURL = { uri: item.url };
+        //onPress={(() => props.onUpdateState(item))}
+        //onPress={callback ? () => callback(cardInfo) : () => {}}>
         return(
-            <View style={ [styles.containerItem, { width: Dimensions.get('window').width/state.limit }] } key={ index }>
+            <TouchableOpacity activeOpacity={0.6} onPress={props.onPress ? () => props.onPress(item) : () => {}} style={ [styles.containerItem, { width: Dimensions.get('window').width/state.limit }] }  key={ index }>
                 <Image source={ imageURL } style={ styles.img } />
-            </View>
+            </TouchableOpacity>
         )
     })
 
@@ -78,9 +81,10 @@ const Carousel = ({ data, split }) => {
                 { renderItems }
             </View>
             <View style ={ styles.row2 }>
-                <View style ={ styles.pageNumbers }>
+                <View style={ styles.pageNumbers }>
                     { renderPageNumbers }
                 </View>
+               
                 <TouchableOpacity onPress={() => decreaseActivePage()} style={ styles.btnLeft } >
                     <View style={ styles.textAlign }>
                         <Text style={ styles.font }>&#8592;</Text>
@@ -91,7 +95,8 @@ const Carousel = ({ data, split }) => {
                         <Text style={ styles.font }>&#8594;</Text>
                     </View>
                 </TouchableOpacity>
-            </View>     
+           
+            </View>
         </SafeAreaView>
     );  
 }
@@ -104,20 +109,22 @@ const styles = StyleSheet.create({
     },
     row2: {
         flexDirection: 'row', 
-        alignSelf: 'flex-end', 
         alignItems: 'center', 
-        margin: 5
+        justifyContent: 'center',
+        margin: 5,
     },
     pageNumbers: {
+        flex: 1,
         flexDirection: 'row', 
-        marginRight: 10
+        marginRight: 10,  
+        justifyContent: 'flex-end',
     },
     containerItem: {
         alignItems: 'center',
     },
     radiobutton: {
-        height: 18,
-        width: 18,
+        height: 13,
+        width: 13,
         borderRadius: 9,
         borderWidth: 1,
         borderColor: '#000',
@@ -127,35 +134,42 @@ const styles = StyleSheet.create({
         marginRight: 1
     },
     radiobuttonSelected: {
-        height: 10,
-        width: 10,
+        height: 7,
+        width: 7,
         borderRadius: 6,
-        backgroundColor: '#B1B2B2',
+        backgroundColor: 'black',
     },
     btnRight: {
-        borderTopRightRadius:15,
-        borderBottomRightRadius: 15,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
         alignItems: 'flex-start', 
-        backgroundColor: '#B1B2B2',
-        height: 40,
+        backgroundColor: '#F0F0F0',
+        height: 30,
         padding: 10,
         paddingTop: 0,
+        borderWidth: 1,
+        marginLeft: 1,
     },
     btnLeft: {
-        borderTopLeftRadius:15,
-        borderBottomLeftRadius: 15,
+        borderTopLeftRadius: 10,
+        borderBottomLeftRadius: 10,
         alignItems: 'flex-start', 
-        backgroundColor: '#B1B2B2',
-        height: 40,
+        backgroundColor: '#F0F0F0',
+        height: 30,
         padding: 10,
         paddingTop: 0,
+        borderWidth: 1,
+        marginRight: 1,
     },
     font: {
         fontSize: 25,
     },
     textAlign: {
         flex: 1, 
-        justifyContent: 'center'
+        justifyContent: 'center',
+       alignItems: 'flex-end',
+       alignContent: 'flex-end',
+       alignSelf: 'flex-end'
     },
     img: {
         width: '100%',

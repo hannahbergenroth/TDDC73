@@ -28,6 +28,8 @@ const App = () => {
 const [items, setItems] = useState(data);
 const [showCalender, setShowCalender] = useState(false);
 
+const [placeholder, setPlacholder] = useState("Pick a date");
+
 // Carousel: 
 // required: data
 // optional: split, onPress
@@ -41,12 +43,11 @@ const [showCalender, setShowCalender] = useState(false);
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <Carousel data={items} split={3} onPress={(item) => Alert.alert(`${item.title}`)}/>
-       
         <TouchableOpacity onPress={() => setShowCalender(!showCalender)}>
-          <Text>x</Text>
+          <Text style={{fontSize: 22, textAlign: 'center'}}>&#128197; {placeholder}</Text>
         </TouchableOpacity>
         <View>
-          {showCalender ? <Calender getDate={(day) => Alert.alert(day.toString())} date={'2021-01-17'}/> : null}
+          {showCalender ? <Calender getDate={(day) => setPlacholder(day)} /> : null}
         </View>
       </SafeAreaView>
     </>
